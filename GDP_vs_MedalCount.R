@@ -1,5 +1,10 @@
 library(ggplot2);
+library(readr);
+
 source("DataSets611.R");
+
+MedalCount_vs_GDP <- read.csv("derived_data/MedalCount_vs_GDP.csv");
+MedalCount_vs_GDP <- read.csv("derived_data/gdp_ratio_vs_medal_count_ratio.csv");
 
 gdp_vs_medalcount <- ggplot(MedalCount_vs_GDP, aes(x=GDP, y=medal_count)) + geom_point();
 
