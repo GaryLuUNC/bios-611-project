@@ -24,11 +24,8 @@ MedalCountRatio_vs_GDPRatio <- MedalCount_vs_GDP_First_And_Last_Year %>% filter(
   mutate(GDP_2 = lag(GDP), medal_count_2=lag(medal_count)) %>% filter(year==max_year_by_country) %>% 
   mutate(medal_count_ratio=medal_count_2/medal_count, gdp_ratio=GDP_2/GDP) %>% select(country_code, medal_count_ratio, gdp_ratio);
 
-gdp_vs_medalcount <- ggplot(MedalCount_vs_GDP, aes(x=GDP, y=medal_count)) + geom_point();
-
-gdp_ratio_vs_medal_count_ratio <- ggplot(MedalCountRatio_vs_GDPRatio, aes(x=gdp_ratio, y=medal_count_ratio)) + geom_point();
-
 ensure_directory("derived_data");
 write_csv(Medal_Data_WithGDP, "derived_data/project_data.csv");
 write_csv(MedalCount_vs_GDP, "derived_data/MedalCount_vs_GDP.csv");
 write_csv(MedalCountRatio_vs_GDPRatio, "derived_data/MedalCountRatio_vs_GDPRatio.csv")
+
