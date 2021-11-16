@@ -2,30 +2,64 @@ library(readr);
 library(dplyr);
 source("utils.R");
 
-Medal_Data <- read.csv("Summer-Olympic-medals-1976-to-2008.csv");
+Athlete_Data <- read.csv("source_data/athlete_events.csv");
 
-GDP_Data <- read.csv("gdp_csv.csv")
+GDP_Data <- read.csv("source_data/gdp_csv.csv");
 
-names(Medal_Data) <- simplify_strings(names(Medal_Data));
+Pollution_Data <- read.csv("source_data/death-rates-from-air-pollution.csv");
+
+names(Athlete_Data) <- simplify_strings(names(Athlete_Data));
 names(GDP_Data) <- simplify_strings(names(GDP_Data));
-GDP_Data <- GDP_Data %>% select(-country_name) %>% rename(GDP=value);
+names(Pollution_Data) <- simplify_strings(names(Pollution_Data));
 
-Medal_Data_WithGDP <- Medal_Data %>% inner_join(GDP_Data, by=c("year", "country_code")) %>% select(-athlete);
+Medal_Data<-Athlete_Data %>% filter(season=="Summer" & !is.na(medal)) %>% rename(country_code=noc)
+
+GDP_Data <- GDP_Data %>% rename(gdp=value);
+Pollution_Data <- Pollution_Data %>% rename(country_code=code)
+
+Pollution_Data <- Pollution_Data %>% rename(death_rate=deaths_air_pollution_sex_both_age_age_standardized_rate_) %>% select(country_code, year, death_rate)
 
 MedalCount <- Medal_Data %>% group_by(country_code, year) %>% summarise(medal_count=n()); 
 
-MedalCount_vs_GDP <- MedalCount %>% inner_join(GDP_Data, by=c("country_code", "year"));
+GDP_vs_MedalCount <- MedalCount %>% inner_join(GDP_Data, by=c("country_code", "year"));
 
-MedalCount_vs_GDP_First_And_Last_Year <- MedalCount_vs_GDP %>% group_by(country_code) %>% mutate(min_year_by_country=min(year, na.rm = TRUE), 
-                                                                                                 max_year_by_country=max(year, na.rm = TRUE)) %>%
-  filter(year==min_year_by_country | year==max_year_by_country) %>% arrange(country_code, year, ascending=TRUE);
+Athlete_Count<-Athlete_Data %>% group_by(year, noc) %>% summarise(athlete_count=n()) %>% rename(country_code=noc);
 
-MedalCountRatio_vs_GDPRatio <- MedalCount_vs_GDP_First_And_Last_Year %>% filter(min_year_by_country != max_year_by_country) %>% 
-  mutate(GDP_2 = lag(GDP), medal_count_2=lag(medal_count)) %>% filter(year==max_year_by_country) %>% 
-  mutate(medal_count_ratio=medal_count_2/medal_count, gdp_ratio=GDP_2/GDP) %>% select(country_code, medal_count_ratio, gdp_ratio);
+GDP_vs_Ratio <- GDP_vs_MedalCount %>% inner_join(Athlete_Count, by=c("year", "country_code")) %>% mutate(ratio=medal_count/athlete_count);
+
+Pollution_vs_MedalCount <- MedalCount %>% inner_join(Pollution_Data, by=c("country_code", "year"));
+
+Pollution_vs_Ratio <- Pollution_vs_MedalCount %>% inner_join(Athlete_Count, by=c("year", "country_code")) %>% mutate(ratio=medal_count/athlete_count);
+
+MedalCount_China <- MedalCount %>% filter(country_code == "CHN")
+
+MedalCount_USSR <- MedalCount %>% filter(country_code=="URS");
+MedalCount_Russia <- MedalCount %>% filter(country_code=="RUS");
+MedalCount_Russia_All <- rbind(MedalCount_USSR, MedalCount_Russia);
+
+MedalCount_USA <- MedalCount %>% filter(country_code=="USA");
+
+MedalCount_GBR <- MedalCount %>% filter(country_code=="GBR");
+
+MedalCount_GER <- MedalCount %>% filter(country_code=="GER");
 
 ensure_directory("derived_data");
-write_csv(Medal_Data_WithGDP, "derived_data/project_data.csv");
-write_csv(MedalCount_vs_GDP, "derived_data/MedalCount_vs_GDP.csv");
-write_csv(MedalCountRatio_vs_GDPRatio, "derived_data/MedalCountRatio_vs_GDPRatio.csv")
+write_csv(Athlete_Data, "derived_data/Athlete_Data.csv");
+write_csv(GDP_Data, "derived_data/GDP_Data.csv");
+write_csv(Pollution_Data, "derived_data/Pollution_Data.csv");
+write_csv(Medal_Data, "derived_data/Medal_Data.csv");
+write_csv(MedalCount, "derived_data/MedalCount.csv");
+write_csv(GDP_vs_MedalCount, "derived_data/GDP_vs_MedalCount.csv");
+write_csv(Athlete_Count, "derived_data/Athlete_Count.csv");
+write_csv(GDP_vs_Ratio, "derived_data/GDP_vs_Ratio.csv");
+write_csv(Pollution_vs_MedalCount, "derived_data/Pollution_vs_MedalCount.csv");
+write_csv(Pollution_vs_Ratio, "derived_data/Pollution_vs_Ratio.csv");
+write_csv(MedalCount_China, "derived_data/MedalCount_China.csv");
+write_csv(MedalCount_USSR, "derived_data/MedalCount_USSR.csv");
+write_csv(MedalCount_Russia, "derived_data/MedalCount_Russia.csv");
+write_csv(MedalCount_Russia_All, "derived_data/MedalCount_Russia_All.csv");
+write_csv(MedalCount_USA, "derived_data/MedalCount_USA.csv");
+write_csv(MedalCount_GBR, "derived_data/MedalCount_GBR.csv");
+write_csv(MedalCount_GER, "derived_data/MedalCount_GER.csv")
+
 
