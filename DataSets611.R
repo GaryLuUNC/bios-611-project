@@ -44,22 +44,12 @@ MedalCount_GBR <- MedalCount %>% filter(country_code=="GBR");
 MedalCount_GER <- MedalCount %>% filter(country_code=="GER");
 
 ensure_directory("derived_data");
-write_csv(Athlete_Data, "derived_data/Athlete_Data.csv");
-write_csv(GDP_Data, "derived_data/GDP_Data.csv");
-write_csv(Pollution_Data, "derived_data/Pollution_Data.csv");
-write_csv(Medal_Data, "derived_data/Medal_Data.csv");
-write_csv(MedalCount, "derived_data/MedalCount.csv");
 write_csv(GDP_vs_MedalCount, "derived_data/GDP_vs_MedalCount.csv");
-write_csv(Athlete_Count, "derived_data/Athlete_Count.csv");
 write_csv(GDP_vs_Ratio, "derived_data/GDP_vs_Ratio.csv");
 write_csv(Pollution_vs_MedalCount, "derived_data/Pollution_vs_MedalCount.csv");
 write_csv(Pollution_vs_Ratio, "derived_data/Pollution_vs_Ratio.csv");
 write_csv(MedalCount_China, "derived_data/MedalCount_China.csv");
-write_csv(MedalCount_USSR, "derived_data/MedalCount_USSR.csv");
-write_csv(MedalCount_Russia, "derived_data/MedalCount_Russia.csv");
 write_csv(MedalCount_Russia_All, "derived_data/MedalCount_Russia_All.csv");
 write_csv(MedalCount_USA, "derived_data/MedalCount_USA.csv");
 write_csv(MedalCount_GBR, "derived_data/MedalCount_GBR.csv");
 write_csv(MedalCount_GER, "derived_data/MedalCount_GER.csv")
-
-
