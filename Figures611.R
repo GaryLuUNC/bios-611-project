@@ -1,5 +1,6 @@
 library(readr);
 library(ggplot2);
+source("utils.R");
 
 GDP_vs_MedalCount <- read.csv("derived_data/GDP_vs_MedalCount.csv");
 GDP_vs_Ratio <- read.csv("derived_data/GDP_vs_Ratio.csv");
