@@ -3,6 +3,7 @@ PHONY: clean
 clean:
 	rm derived_data/*
 	rm figures/*
+	rm report.pdf
 
 derived_data/GDP_vs_MedalCount.csv\
 derived_data/GDP_vs_Ratio.csv\
