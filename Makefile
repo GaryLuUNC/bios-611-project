@@ -55,4 +55,4 @@ figures/USA_Medals.png\
 figures/GBR_Medals.png\
 figures/GER_Medals.png\
 report.Rmd
-	R -r "rmarkdown::render(\"report.Rmd\", output_format=\"pdf_document\")"
+	Rscript -e 'rmarkdown::render("report.Rmd")'
