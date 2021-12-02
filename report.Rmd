@@ -1,6 +1,11 @@
 ---
 title: "Exploring Data on the Olympics"
-output: pdf_document
+author: "Gary Lu"
+output: 
+  pdf_document:
+    fig_caption: yes 
+    includes:
+      in_header: preamble.tex
 ---
 
 After having to wait an extra year to watch the Summer Olympics, I got more excited than ever to watch the Olympics this year. I forgot how fascinating it was to see the athletes' performance until when I first watched the events again this year. It was also satisfying to see all these athletes from teams I support win all these medals. In fact, this is the first year I was actually interested in the awards as much as I was interested in the events. What sparked my interest even further was their showing the top countries in medal count this year. Now, with data on the Olympics medal available, I can explore more to see what other interesting things I can find.
@@ -10,8 +15,7 @@ Before we get started, we need to import the packages we need:
 ```{r}
 library(tidyverse);
 library(readr);
-library(dplyr);
-library(ggplot2)
+library(dplyr)
 ```
 
 Let's also define this function to make our work a little easier:
@@ -82,10 +86,9 @@ Now, we can combine it with the GDP Data by using the inner_join function:
 GDP_vs_MedalCount <- MedalCount %>% inner_join(GDP_Data, by=c("country_code", "year"));
 ```
 
-And with that, we can simply graph the relationship between GDP and number of medals won:
-```{r}
-ggplot(GDP_vs_MedalCount, aes(x=gdp, y=medal_count)) + geom_point();
-```
+And with that, we can simply graph the relationship between GDP and number of medals won in ggplot:
+
+![GDP vs. Number of Medals Won](figures/GDP_vs_MedalCount.png)
 
 There appears to be a positive association between GDP and number of medals won. We can measure the strength of association by finding the Pearson correlation coefficient: 
 ```{r}
@@ -101,9 +104,11 @@ Athlete_Count<-Athlete_Data %>% group_by(year, noc) %>% summarise(athlete_count=
 Now, let's combine it with our medal count data and graph the relation between GDP and the number of medals a country won per athlete from that country. We will define a ratio column to mean the number of medals won per athlete.
 ```{r}
 GDP_vs_Ratio <- GDP_vs_MedalCount %>% inner_join(Athlete_Count, by=c("year", "country_code")) %>% mutate(ratio=medal_count/athlete_count);
-
-ggplot(GDP_vs_Ratio, aes(x=gdp, y=ratio)) + geom_point()
 ```
+
+And here is the graph:
+
+![GDP vs. Number of Medals Won Per Competing Athlete](figures/GDP_vs_Ratio.png)
 
 Correlation is apparently positive, but less clear from this plot. Let's see what happens if we were to find the correlation:
 ```{r}
@@ -119,9 +124,10 @@ Now, let's see if there is an association between air pollution death rates and 
 Let's combine the data and graph the association:
 ```{r}
 Pollution_vs_MedalCount <- MedalCount %>% inner_join(Pollution_Data, by=c("country_code", "year"));
-
-ggplot(Pollution_vs_MedalCount, aes(x=death_rate, y=medal_count)) +geom_point()
 ```
+
+![Death Rate Due to Pollution vs. Number of Medals Won](figures/Pollution_vs_MedalCount.png)
+
 There is no clear correlation shown in this graph. Here is the Pearson correlation coefficient:
 ```{r}
 cor.test(Pollution_vs_MedalCount$death_rate, Pollution_vs_MedalCount$medal_count)
@@ -130,9 +136,11 @@ cor.test(Pollution_vs_MedalCount$death_rate, Pollution_vs_MedalCount$medal_count
 As expected, it is a negative correlation, but it is weak. Let's see if we can get a better correlation by adjusting for the number of athletes:
 ```{r}
 Pollution_vs_Ratio <- Pollution_vs_MedalCount %>% inner_join(Athlete_Count, by=c("year", "country_code")) %>% mutate(ratio=medal_count/athlete_count);
+```
 
-ggplot(Pollution_vs_Ratio, aes(x=death_rate, y=ratio)) + geom_point();
+![Death Rate Due to Pollution vs. Number of Medals Won Per Competing Athlete](figures/Pollution_vs_Ratio.png)
 
+```{r}
 cor.test(Pollution_vs_Ratio$death_rate, Pollution_vs_Ratio$ratio)
 ```
 
@@ -150,9 +158,9 @@ MedalCount_China <- MedalCount %>% filter(country_code == "CHN")
 ```
 
 We can now make a line graph that shows the trend China's medal count over the years. Since ping-pong was added to the Olympics in 1988, we will also add a vertical line to indicate it. 
-```{r}
-ggplot(MedalCount_China, aes(x=year, y=medal_count)) + geom_line() + geom_vline(xintercept=1988)
-```
+
+![China's Medal Count Trend (year of addition of ping-pong to the Olympics marked)](figures/China_Medals.png)
+
 Note that the only year before 1984 that China competed in the Summer Olympics was 1952. In that year, China won 0 medals.
 
 As you can see from this plot, China's medal count started going up after table tennis was added to the Olympics. 
@@ -163,8 +171,9 @@ Now, let's see how Russia did in the Olympics during and after the Soviet Union.
 MedalCount_USSR <- MedalCount %>% filter(country_code=="URS");
 MedalCount_Russia <- MedalCount %>% filter(country_code=="RUS");
 MedalCount_Russia_All <- rbind(MedalCount_USSR, MedalCount_Russia);
-ggplot(MedalCount_Russia_All, aes(x=year, y=medal_count)) + geom_line() + geom_point() + geom_vline(xintercept=1991)
 ```
+
+![Russia's Medal Count Trend (year of collapse of Soviet Union marked)](figures/Russia_Medals.png)
 
 As you can see in this graph, Russia got fewer medals each year after the Soviet Union than it did during each of the last years of the Soviet Union.Note that the 1980 spike in medal count could be due to the Soviet Union's hosting, which we will talk about in the next section.
 
@@ -175,9 +184,9 @@ Finally, let's see if we can observe an effect of a country's hosting on its med
 Let's see USA's trend in medal count over the years and mark the years USA hosted (1904, 1932, 1984 and 1996).
 ```{r}
 MedalCount_USA <- MedalCount %>% filter(country_code=="USA");
-
-ggplot(MedalCount_USA, aes(x=year, y=medal_count)) + geom_line() + geom_vline(xintercept=c(1904, 1932, 1984, 1996))
 ```
+
+![USA's Medal Count Trend (years of USA's hostings marked)](figures/USA_Medals.png)
 
 Notice that whenever USA hosts the Summer Olympics, its medal count spikes. Let's see if this is also true for the United Kingdom and Germany. 
 
@@ -185,17 +194,18 @@ We will test this on the United Kingdom next. The Olympics were hosted in the Un
 ```{r}
 MedalCount_GBR <- MedalCount %>% filter(country_code=="GBR");
 
-ggplot(MedalCount_GBR, aes(x=year, y=medal_count)) + geom_line() + geom_vline(xintercept=c(1908, 1948, 2012))
 ```
+
+![United Kingdom's Medal Count Trend (years of UK's hostings marked)](figures/GBR_Medals.png)
 
 Again, we observed a spike in medal count during years the Summer Olympics were hosted in the United Kingdom. 
 
 Finally, we will test this on Germany. Germany hosted in 1936 and 1972.
 ```{r}
-MedalCount_GER <- MedalCount %>% filter(country_code=="GER");
-
-ggplot(MedalCount_GER, aes(x=year, y=medal_count)) + geom_line() + geom_vline(xintercept=c(1936, 1972))
+MedalCount_GER <- MedalCount %>% filter(country_code=="GER")
 ```
+
+![Germany's Medal Count Trend (years of Germany's hosting marked)](figures/GER_Medals.png)
 
 There is a major spike in 1936, but no spike in 1972.
 
