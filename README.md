@@ -6,14 +6,34 @@ Welcome to my project on data in the Olympics. In this project, we have data on 
 
 In the VCL terminal, run the following code to build the docker:
 ```
-sudo git clone https://github.com/GaryLuUNC/bios-611-project.git
+git clone https://github.com/GaryLuUNC/bios-611-project.git
+
 cd bios-611-project
-docker build -t "name:Dockerfile" .
+
+docker build . -t project-env
+
+docker run -v $(pwd):/home/rstudio/project \
+-p 8787:8787 \
+-p 8722:22 \
+-e PASSWORD=hello123 \ 
+-it project-env \bin\bash
 ```
 
 ## Makefile
 
-Run Makefile in the RStudio terminal.
+After you built and ran the docker, you should be inside the root in the terminal. Before you run make, you need to transfer ownership of the files to the RStudio user:
+
+```
+chown -R 755 /home/rstudio/project
+```
+
+Now, you can run Makefile in the RStudio terminal. You can start the RStudio terminal in VCL by running 
+
+```
+cd /home/rstudio/project
+```
+
+To run Makefile, you use the ```make``` command and you type what file you want to make. For example, ```make derived_data/GDP_vs_MedalCount.csv```. You can also run ```make clean``` to clear everything Makefile created.
 
 ## Shiny
 
