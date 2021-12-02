@@ -2,6 +2,14 @@
 
 Welcome to my project on data in the Olympics. In this project, we have data on all of the athletes who competed in the Olympics this past century. It shows what years they competed, what medals they won, what team they are in, what gender they are, etc. In this project, we will be using the Olympics data along  with some other datasets to see what associations we can find, especially ones that involve number of medals a country wins in a given year. Let's get started.
 
+Datasets used in this project can be found here:
+https://www.kaggle.com/heesoo37/120-years-of-olympic-history-athletes-and-results
+https://www.kaggle.com/tunguz/country-regional-and-world-gdp
+https://www.kaggle.com/akshat0giri/death-due-to-air-pollution-19902017
+https://www.kaggle.com/divyansh22/summer-olympics-medals
+
+Note: For storage purposes, some columns in source_data/athlete_events.csv were removed.
+
 ## Docker
 
 In the VCL terminal, run the following code to build the docker:
