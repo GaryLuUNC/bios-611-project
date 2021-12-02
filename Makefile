@@ -46,6 +46,7 @@ report.pdf:\
 source_data/athlete_events.csv\
 source_data/gdp_csv.csv\
 source_data/death-rates-from-air-pollution.csv\
+preamble.tex\
 figures/GDP_vs_MedalCount.png figures/GDP_vs_Ratio.png\
 figures/Pollution_vs_MedalCount.png\
 figures/Pollution_vs_Ratio.png\
