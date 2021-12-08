@@ -51,7 +51,7 @@ To run the visualization:
 
 1. Download Shiny.R and Summer-Olympic-medals-1976-to-2008.csv from this repository. If you are on github.com, you can do it by clicking on Code above the repository and then clicking on Download ZIP.
 2. Open up RStudio.
-3. Run the line of code getwd() in RStudio to see which folder does R look for files.
+3. Run the line of code ```getwd()``` in RStudio to see which folder does R look for files.
 4. Save Shiny.R and Summer-Olympic-medals-1976-to-2008.csv to said folder.
 5. Open up Shiny.R in RStudio and run the script.
 
